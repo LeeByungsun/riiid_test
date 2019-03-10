@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">riiid_test</string>
+    <string name="delete">삭제</string>
+    <string name="delete_sure">삭제 하시겠습니까?</string>
+    <string name="yes">예</string>
+    <string name="no">아니요</string>
+    <string name="comment">Comment</string>
+    <string name="edit">edit</string>
+
+</resources>
