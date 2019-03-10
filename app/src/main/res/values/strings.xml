@@ -6,5 +6,7 @@
     <string name="no">아니요</string>
     <string name="comment">Comment</string>
     <string name="edit">edit</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
 
 </resources>

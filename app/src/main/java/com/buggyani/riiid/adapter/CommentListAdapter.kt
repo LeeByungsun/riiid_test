@@ -39,6 +39,7 @@ class CommentListAdapter(commentsData: ObservableArrayList<CommentVo>) : Recycle
             Log.e(TAG, "body = $body")
             holder!!.name.text = name
             holder.body.text = body
+            holder.email.text = email
 
         }
     }
