@@ -2,8 +2,8 @@ package com.buggyani.riiid
 
 import android.app.Application
 import android.content.Context
-import com.buggyani.test.network.RiiidAPIIInfo
-import com.buggyani.test.util.BPreference
+import com.buggyani.riiid.GlobalStatic.DEBUG
+import com.buggyani.riiid.network.RiiidAPIIInfo
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -15,7 +15,6 @@ import retrofit2.converter.gson.GsonConverterFactory
  */
 class RiiidApplication : Application() {
     private val TAG = javaClass.simpleName
-    private var mPref: BPreference? = null
     private var context: Context? = null
 
 
@@ -23,16 +22,13 @@ class RiiidApplication : Application() {
         super.onCreate()
         instance = this
         this.context = applicationContext
-        setRetrofit_Server(true)
-        mPref = BPreference.getInstance(instance!!.applicationContext)
+        setRetrofitServer(DEBUG)
     }
 
     /**
      * retrofit setting
      */
-    private fun setRetrofit_Server(debug: Boolean) {
-
-
+    fun setRetrofitServer(debug: Boolean) {
         retrofit_Server = if (debug) {
             val httpClient = OkHttpClient.Builder()
             val logging = HttpLoggingInterceptor()
@@ -49,13 +45,11 @@ class RiiidApplication : Application() {
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create()).build()
         }
-
         riiid_api_Server = retrofit_Server!!.create(RiiidAPIIInfo::class.java)
     }
 
 
     companion object {
-
         var instance: RiiidApplication? = null
             private set
         var retrofit_Server: Retrofit? = null

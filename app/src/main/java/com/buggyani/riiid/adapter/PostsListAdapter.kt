@@ -1,4 +1,4 @@
-package com.buggyani.test.adapter
+package com.buggyani.riiid.adapter
 
 /**
  * Created by bslee on 2019-03-10.
@@ -19,7 +19,6 @@ class PostsListAdapter(postsData: ObservableArrayList<PostVo>) : RecyclerView.Ad
     private val TAG = javaClass.simpleName
     private var postsList: MutableList<PostVo>? = postsData
 
-
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): PostsViewHolder {
         val view = LayoutInflater.from(parent!!.context).inflate(R.layout.item_post, parent, false)
         return PostsViewHolder(view)
@@ -38,19 +37,15 @@ class PostsListAdapter(postsData: ObservableArrayList<PostVo>) : RecyclerView.Ad
             Log.e(TAG, "body = $body")
             holder!!.title.text = title
             holder.body.text = body
-
         }
     }
 
     fun removeAt(position: Int) {
         postsList!!.removeAt(position)
         notifyItemRemoved(position);
-//        notifyItemRangeChanged(0, postsList.size());
     }
 
-
     class PostsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val TAG = javaClass.simpleName
         var title = view.title
         var body = view.body
     }

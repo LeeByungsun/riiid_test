@@ -1,4 +1,4 @@
-package com.buggyani.test.adapter
+package com.buggyani.riiid.adapter
 
 /**
  * Created by bslee on 2019-03-10.
@@ -18,7 +18,6 @@ class CommentListAdapter(commentsData: ObservableArrayList<CommentVo>) : Recycle
 
     private val TAG = javaClass.simpleName
     private var commentsList: MutableList<CommentVo>? = commentsData
-
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): CommentViewHolder {
         val view = LayoutInflater.from(parent!!.context).inflate(R.layout.item_comment, parent, false)
@@ -40,13 +39,10 @@ class CommentListAdapter(commentsData: ObservableArrayList<CommentVo>) : Recycle
             holder!!.name.text = name
             holder.body.text = body
             holder.email.text = email
-
         }
     }
 
-
     class CommentViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val TAG = javaClass.simpleName
         var body = view.body
         var name = view.name
         var email = view.email

@@ -11,36 +11,33 @@ import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
 import android.widget.AbsListView
+import com.buggyani.riiid.GlobalStatic.POST_DATA
 import com.buggyani.riiid.RiiidApplication.Companion.riiid_api_Server
-import com.buggyani.riiid.adapter.RecyclerItemClickListenr
+import com.buggyani.riiid.adapter.PostsListAdapter
+import com.buggyani.riiid.adapter.RecyclerItemClickListener
 import com.buggyani.riiid.databinding.ActivityMainBinding
 import com.buggyani.riiid.network.vo.PostVo
-import com.buggyani.test.adapter.PostsListAdapter
-import com.buggyani.test.util.BPreference
-import com.buggyani.test.util.GlobalStatic.POST_DATA
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
-import java.util.*
+
 
 class MainActivity : AppCompatActivity() {
     private val TAG = javaClass.simpleName
-    private var mPref: BPreference? = null
     private lateinit var binding: ActivityMainBinding
     private var mPostsData = ObservableArrayList<PostVo>()
     private lateinit var mPostDataAdapter: PostsListAdapter
-    private val mCtx: MainActivity
-        get() = this
 
     private var mStart: Int = 0
-
     private var disposable: Disposable? = null
-
     private var isScrolling = false
     private var currentItem = 0
     private var totalItem = 0
     private var scrollOutItems = 0
+
+    private val mCtx: MainActivity
+        get() = this
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,14 +54,10 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         if (mPostsData.size != 0) {
-            mStart = 0;
+            mStart = 0
             mPostsData.clear()
             getPostsList()
         }
-    }
-
-    init {
-        mPref = BPreference.getInstance(this)
     }
 
     private fun intiUI() {
@@ -72,6 +65,9 @@ class MainActivity : AppCompatActivity() {
         getPostsList()
     }
 
+    /**
+     * init recyclerView
+     */
     private fun initRecyclerView(data: ObservableArrayList<PostVo>) {
         mPostDataAdapter = PostsListAdapter(data)
         posts_recyclerview.adapter = mPostDataAdapter
@@ -104,7 +100,7 @@ class MainActivity : AppCompatActivity() {
 
             }
         })
-        posts_recyclerview.addOnItemTouchListener(RecyclerItemClickListenr(this, posts_recyclerview, object : RecyclerItemClickListenr.OnItemClickListener {
+        posts_recyclerview.addOnItemTouchListener(RecyclerItemClickListener(this, posts_recyclerview, object : RecyclerItemClickListener.OnItemClickListener {
             override fun onItemClick(view: View, position: Int) {
                 Log.e(TAG, "onItemClick = $position")
                 detailPost(position)
@@ -118,7 +114,10 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun getPostsList() {
+    /**
+     * get Posts 30개씩
+     */
+    fun getPostsList() {
         Log.e(TAG, "mIndex = $mStart")
         disposable = riiid_api_Server.getPosts(mStart, 30)
                 .subscribeOn(Schedulers.io())
@@ -135,20 +134,23 @@ class MainActivity : AppCompatActivity() {
                             Log.e(TAG, "-----------------------------------")
                         }
                     }
-                    mStart = mStart + 30
+                    mStart += 30
                     Log.e(TAG, "mIndex = $mStart")
                     mPostDataAdapter.notifyDataSetChanged()
                 }, { t: Throwable? -> t!!.printStackTrace() })
     }
 
-    fun deleteDialog(positon: Int) {
-        val builder = AlertDialog.Builder(this@MainActivity)
+    /**
+     *  delete Post Dialog
+     */
+    fun deleteDialog(position: Int) {
+        val builder = AlertDialog.Builder(mCtx)
 
         builder.setTitle(getString(R.string.delete))
         builder.setMessage(getString(R.string.delete_sure))
 
         builder.setPositiveButton(getString(R.string.yes)) { _, _ ->
-            deletePost(positon)
+            deletePost(position)
 
         }
         builder.setNegativeButton(getString(R.string.no)) { dialog, _ ->
@@ -158,7 +160,10 @@ class MainActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    fun deletePost(id: Int) {
+    /**
+     * delete post
+     */
+    private fun deletePost(id: Int) {
         Log.e(TAG, "mIndex = $mStart")
         disposable = riiid_api_Server.deletePost(id + 1)
                 .subscribeOn(Schedulers.io())
@@ -170,6 +175,9 @@ class MainActivity : AppCompatActivity() {
                 }, { t: Throwable? -> t!!.printStackTrace() })
     }
 
+    /**
+     * get post detail data
+     */
     fun detailPost(id: Int) {
         disposable = riiid_api_Server.getPostsDetail(id + 1)
                 .subscribeOn(Schedulers.io())
@@ -185,11 +193,12 @@ class MainActivity : AppCompatActivity() {
                 }, { t: Throwable? -> t!!.printStackTrace() })
     }
 
-    fun sendActivity(data: PostVo) {
+    /**
+     * send detail activity
+     */
+    private fun sendActivity(data: PostVo) {
         intent = Intent(this, DetailViewActivity::class.java)
         intent.putExtra(POST_DATA, data)
         startActivity(intent)
     }
-
-
 }
