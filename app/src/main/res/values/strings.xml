@@ -10,5 +10,6 @@
     <string name="save">Save</string>
     <string name="title">Ttiel</string>
     <string name="text">Text</string>
+    <string name="nodata">No more posts</string>
 
 </resources>

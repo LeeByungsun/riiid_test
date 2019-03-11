@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
 import android.widget.AbsListView
+import android.widget.Toast
 import com.buggyani.riiid.GlobalStatic.POST_DATA
 import com.buggyani.riiid.RiiidApplication.Companion.riiid_api_Server
 import com.buggyani.riiid.adapter.PostsListAdapter
@@ -123,20 +124,30 @@ class MainActivity : AppCompatActivity() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ t: ArrayList<PostVo>? ->
-                    t!!.forEach {
-                        mPostsData.add(it)
-                        it.run {
-                            Log.e(TAG, "-----------------------------------")
-                            Log.e(TAG, "title = $title")
-                            Log.e(TAG, "body = $body")
-                            Log.e(TAG, "usderId = $usderId")
-                            Log.e(TAG, "id = $id")
-                            Log.e(TAG, "-----------------------------------")
+
+                    when (t!!.size) {
+                        0 -> {
+                            Log.e(TAG, "t size = ${t!!.size}")
+                            Toast.makeText(mCtx, getString(R.string.nodata), Toast.LENGTH_SHORT).show()
+                        }
+                        else -> {
+                            t!!.forEach {
+                                mPostsData.add(it)
+                                it.run {
+                                    Log.e(TAG, "-----------------------------------")
+                                    Log.e(TAG, "title = $title")
+                                    Log.e(TAG, "body = $body")
+                                    Log.e(TAG, "usderId = $usderId")
+                                    Log.e(TAG, "id = $id")
+                                    Log.e(TAG, "-----------------------------------")
+                                }
+                            }
+                            mStart += 30
+                            Log.e(TAG, "mIndex = $mStart")
+                            mPostDataAdapter.notifyDataSetChanged()
                         }
                     }
-                    mStart += 30
-                    Log.e(TAG, "mIndex = $mStart")
-                    mPostDataAdapter.notifyDataSetChanged()
+
                 }, { t: Throwable? -> t!!.printStackTrace() })
     }
 
