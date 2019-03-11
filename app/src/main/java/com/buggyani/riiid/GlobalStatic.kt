@@ -1,4 +1,4 @@
-package com.buggyani.test.util
+package com.buggyani.riiid
 
 /**
  * Created by bslee on 2019-03-10.
@@ -6,11 +6,15 @@ package com.buggyani.test.util
 
 object GlobalStatic {
 
+    val DEBUG = BuildConfig.DEBUG
+
 
     /*----------------------------------
     intent
     ------------------------------------*/
     const val POST_DATA = "post"
+
+
     /*----------------------------------
     Header
    ------------------------------------*/
