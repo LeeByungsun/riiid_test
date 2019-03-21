@@ -4,7 +4,7 @@ package com.buggyani.riiid.adapter
  * Created by bslee on 2019-03-10.
  */
 
-import android.databinding.ObservableArrayList
+import android.arch.lifecycle.MutableLiveData
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,10 +14,10 @@ import com.buggyani.riiid.R
 import com.buggyani.riiid.network.vo.PostVo
 import kotlinx.android.synthetic.main.item_post.view.*
 
-class PostsListAdapter(postsData: ObservableArrayList<PostVo>) : RecyclerView.Adapter<PostsListAdapter.PostsViewHolder>() {
+class PostsListAdapter(postsData: ArrayList<PostVo>) : RecyclerView.Adapter<PostsListAdapter.PostsViewHolder>() {
 
     private val TAG = javaClass.simpleName
-    private var postsList: MutableList<PostVo>? = postsData
+    private var postsList: ArrayList<PostVo> = postsData
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): PostsViewHolder {
         val view = LayoutInflater.from(parent!!.context).inflate(R.layout.item_post, parent, false)
@@ -25,11 +25,11 @@ class PostsListAdapter(postsData: ObservableArrayList<PostVo>) : RecyclerView.Ad
     }
 
     override fun getItemCount(): Int {
-        return postsList!!.size
+        return postsList.size
     }
 
     override fun onBindViewHolder(holder: PostsViewHolder?, position: Int) {
-        val postVo = postsList!![position]
+        val postVo = postsList[position]
         postVo.run {
             Log.e(TAG, "id = $id")
             Log.e(TAG, "usderId = $usderId")
@@ -41,7 +41,7 @@ class PostsListAdapter(postsData: ObservableArrayList<PostVo>) : RecyclerView.Ad
     }
 
     fun removeAt(position: Int) {
-        postsList!!.removeAt(position)
+        postsList.removeAt(position)
         notifyItemRemoved(position);
     }
 

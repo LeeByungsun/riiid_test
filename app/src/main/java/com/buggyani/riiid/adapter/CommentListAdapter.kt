@@ -19,6 +19,7 @@ class CommentListAdapter(commentsData: ObservableArrayList<CommentVo>) : Recycle
     private val TAG = javaClass.simpleName
     private var commentsList: MutableList<CommentVo>? = commentsData
 
+
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): CommentViewHolder {
         val view = LayoutInflater.from(parent!!.context).inflate(R.layout.item_comment, parent, false)
         return CommentViewHolder(view)

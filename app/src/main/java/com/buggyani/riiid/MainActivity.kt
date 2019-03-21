@@ -1,6 +1,10 @@
 package com.buggyani.riiid
 
 import android.app.AlertDialog
+import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModel
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.databinding.ObservableArrayList
@@ -12,12 +16,14 @@ import android.util.Log
 import android.view.View
 import android.widget.AbsListView
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import com.buggyani.riiid.GlobalStatic.POST_DATA
 import com.buggyani.riiid.RiiidApplication.Companion.riiid_api_Server
 import com.buggyani.riiid.adapter.PostsListAdapter
 import com.buggyani.riiid.adapter.RecyclerItemClickListener
 import com.buggyani.riiid.databinding.ActivityMainBinding
 import com.buggyani.riiid.network.vo.PostVo
+import com.buggyani.riiid.viewmodel.PostViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -27,7 +33,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
     private val TAG = javaClass.simpleName
     private lateinit var binding: ActivityMainBinding
-    private var mPostsData = ObservableArrayList<PostVo>()
+    //    private var mPostsData = ObservableArrayList<PostVo>()
     private lateinit var mPostDataAdapter: PostsListAdapter
 
     private var mStart: Int = 0
@@ -36,6 +42,7 @@ class MainActivity : AppCompatActivity() {
     private var currentItem = 0
     private var totalItem = 0
     private var scrollOutItems = 0
+    private lateinit var listViewModel: PostViewModel
 
     private val mCtx: MainActivity
         get() = this
@@ -44,6 +51,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+//        listViewModel = PostViewModel(this)
+
         intiUI()
     }
 
@@ -54,22 +63,33 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (mPostsData.size != 0) {
-            mStart = 0
-            mPostsData.clear()
-            getPostsList()
-        }
+//        if (mPostsData.size != 0) {
+//            mStart = 0
+//            mPostsData.clear()
+//            getPostsList()
+//        }
     }
 
     private fun intiUI() {
-        initRecyclerView(mPostsData)
-        getPostsList()
+//        initRecyclerView(mPostsData)
+
+        listViewModel = ViewModelProviders.of(this).get(PostViewModel::class.java)
+
+
+        listViewModel.getPostsList()
+        listViewModel.posts.observe(this, Observer { t ->
+            initRecyclerView(t!!)
+//            mPostDataAdapter.notifyDataSetChanged()
+        })
+
+//        getPostsList()
     }
 
     /**
      * init recyclerView
      */
-    private fun initRecyclerView(data: ObservableArrayList<PostVo>) {
+//    private fun initRecyclerView(data: ObservableArrayList<PostVo>) {
+    private fun initRecyclerView(data: ArrayList<PostVo>) {
         mPostDataAdapter = PostsListAdapter(data)
         posts_recyclerview.adapter = mPostDataAdapter
         posts_recyclerview.layoutManager = LinearLayoutManager(applicationContext)
@@ -95,7 +115,9 @@ class MainActivity : AppCompatActivity() {
                 if (isScrolling && (currentItem + scrollOutItems == totalItem)) {
                     Log.e(TAG, "Bottom")
                     isScrolling = false
-                    getPostsList()
+                    listViewModel.getPostsList()
+//                    mPostDataAdapter.notifyDataSetChanged()
+//                    listViewModel.getPosts()
                 }
 
 
@@ -118,7 +140,7 @@ class MainActivity : AppCompatActivity() {
     /**
      * get Posts 30개씩
      */
-    fun getPostsList() {
+    /*fun getPostsList() {
         Log.e(TAG, "mIndex = $mStart")
         disposable = riiid_api_Server.getPosts(mStart, 30)
                 .subscribeOn(Schedulers.io())
@@ -149,7 +171,7 @@ class MainActivity : AppCompatActivity() {
                     }
 
                 }, { t: Throwable? -> t!!.printStackTrace() })
-    }
+    }*/
 
     /**
      *  delete Post Dialog
