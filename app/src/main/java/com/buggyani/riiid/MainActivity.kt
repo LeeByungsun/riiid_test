@@ -156,16 +156,15 @@ class MainActivity : AppCompatActivity() {
      */
     fun deleteDialog(position: Int) {
         val builder = AlertDialog.Builder(mCtx)
-
-        builder.setTitle(getString(R.string.delete))
-        builder.setMessage(getString(R.string.delete_sure))
-
-        builder.setPositiveButton(getString(R.string.yes)) { _, _ ->
-            deletePost(position)
-
-        }
-        builder.setNegativeButton(getString(R.string.no)) { dialog, _ ->
-            dialog.dismiss()
+        builder.apply {
+            setTitle(getString(R.string.delete))
+            setMessage(getString(R.string.delete_sure))
+            setPositiveButton(getString(R.string.yes)) { _, _ ->
+                deletePost(position)
+            }
+            setNegativeButton(getString(R.string.no)) { dialog, _ ->
+                dialog.dismiss()
+            }
         }
         val dialog: AlertDialog = builder.create()
         dialog.show()
@@ -209,7 +208,9 @@ class MainActivity : AppCompatActivity() {
      */
     private fun sendActivity(data: PostVo) {
         intent = Intent(this, DetailViewActivity::class.java)
-        intent.putExtra(POST_DATA, data)
+        intent.apply {
+            putExtra(POST_DATA, data)
+        }
         startActivity(intent)
     }
 }
